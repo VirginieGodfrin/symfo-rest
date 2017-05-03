@@ -26,28 +26,19 @@ class PlaceController extends Controller
         $places = $em->getRepository('AppBundle:Place')
                 ->findAll();
 
-        // $data = [];
-
-        // foreach ($places as $value) {
-        //     $data[] = [
-        //         'id' => $value->getId(),
-        //         'name' => $value->getName(),
-        //         'address' => $value->getAddress(),
-        //     ];
-        //  }
-
         //Récupération du view handler
         //$viewHandler = $this->get('fos_rest.view_handler');
         //création d'une vue FosRestBundle
         //suite à format_listener:
-        // rules:
-        //     - { path: '^/', priorities: ['json'], fallback_format: 'json' }
-        // il n'est plus utile de créer la vue
+            // rules:
+            //     - { path: '^/', priorities: ['json'], fallback_format: 'json' }
+            // il n'est plus utile de créer la vue
         //$view = View::create($data);
         //$view->setFormat('json');
         //gestion de la réponse
         //return $viewHandler->handle($view);
         //return $view;
+
         return $places;
 
         //return new JsonResponse($formatted);
@@ -69,13 +60,6 @@ class PlaceController extends Controller
         }
         return $place;
 
-        // $formatted = [
-        //    'id' => $place->getId(),
-        //    'name' => $place->getName(),
-        //    'address' => $place->getAddress(),
-        // ];
-
-        // return new JsonResponse($formatted);
     }
 
     /**
@@ -84,22 +68,6 @@ class PlaceController extends Controller
      */
     public function postPlacesAction(Request $request)
     {
-        $place = new Place();
-        $form = $this->createForm(PlaceType::class, $place);
-
-
-        //Donc pour mieux répondre aux contraintes REST, au lieu d’utiliser la méthode handleRequest pour soumettre le formulaire, nous avons opté pour la soumission manuelle avec submit.
-
-        $form->submit($request->request->all());
-
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($place);
-            $em->flush();
-            return $place;
-        } else {
-            return $form;
-        }
         // test payload
         // return [
         //     'payload' => [
@@ -111,6 +79,23 @@ class PlaceController extends Controller
         // return [
         // 'payload' => json_decode($request->getContent(), true)
         // ];
+
+        $place = new Place();
+        $form = $this->createForm(PlaceType::class, $place);
+        //Donc pour mieux répondre aux contraintes REST, 
+        //au lieu d’utiliser la méthode handleRequest pour soumettre le formulaire, 
+        //nous avons opté pour la soumission manuelle avec submit.
+        $form->submit($request->request->all());
+
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($place);
+            $em->flush();
+            return $place;
+        } else {
+            return $form;
+        }
+        
     }
 
         /**
@@ -127,35 +112,7 @@ class PlaceController extends Controller
             }
         }
 
-        // /**
-        //  * @Rest\View()
-        //  * @Rest\Put("/places/{id}")
-        //  */
-        // public function putPlaceAction($id, Request $request)
-        // {
-        //     $em = $this->getDoctrine()->getManager();
-
-        //     $place = $em->getRepository('AppBundle:Place')
-        //                 ->findOneById($id);
-
-        //     if (empty($place)) {
-        //     return new JsonResponse(['message' => 'Place not found'], Response::HTTP_NOT_FOUND);
-        //     }
-
-        //     $form = $this->createForm(PlaceType::class, $place);
-
-        //     $form->submit($request->request->all());
-
-        //     if ($form->isValid()) {
-        //         $em->merge($place);
-        //         $em->flush();
-        //         return $place;
-        //     } else {
-        //         return $form;
-        //     }
-
-        // }
-
+        
         /**
          * @Rest\View()
          * @Rest\Put("/places/{id}")
@@ -173,23 +130,20 @@ class PlaceController extends Controller
         {
             return $this->updatePlace($id, $request, false);
         }
-        //methode not halowwed
+
 
         private function updatePlace($id, Request $request, $clearMissing)
         {
             $em = $this->getDoctrine()->getManager();
             $place = $em->getRepository('AppBundle:Place')
-                        ->findOneById($id); // L'identifiant en tant que paramètre n'est plus nécessaire
-            /* @var $place Place */
+                        ->findOneById($id);
 
         if (empty($place)) {
-            return new JsonResponse(['message' => 'Place not found'], Response::HTTP_NOT_FOUND);
+            return \FOS\RestBundle\View\View::create(['message' => 'Place not found'], Response::HTTP_NOT_FOUND);
         }
 
         $form = $this->createForm(PlaceType::class, $place);
 
-        // Le paramètre false dit à Symfony de garder les valeurs dans notre
-        // entité si l'utilisateur n'en fournit pas une dans sa requête
         $form->submit($request->request->all(), $clearMissing);
 
         if ($form->isValid()) {

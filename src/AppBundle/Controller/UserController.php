@@ -104,7 +104,7 @@ class UserController extends Controller
 
         $form->submit($request->request->all());
 
-        if ($form->isValid()) {
+        if ($form->isValid()){
             $em->merge($user);
             $em->flush();
             return $user;
@@ -112,5 +112,36 @@ class UserController extends Controller
             return $form;
         }
     }
+
+        /**
+         * @Rest\View()
+         * @Rest\Patch("/users/{id}")
+         */
+        public function patchUserAction($id, Request $request)
+        {
+            $em = $this->getDoctrine()->getManager();
+
+            $user = $em->getRepository('AppBundle:User')
+                    ->findOneById($id);
+
+            if (empty($user)) {
+                return new JsonResponse(['message' => 'user not found'], Response::HTTP_NOT_FOUND);
+            }
+
+            $form = $this->createForm(UserType::class, $user);
+
+            // Le paramètre false dit à Symfony de garder les valeurs dans notre
+            // entité si l'utilisateur n'en fournit pas une dans sa requête
+            $form->submit($request->request->all(), false);
+
+            if ($form->isValid()) {
+                    $em->merge($user);
+                    $em->flush();
+                    return $user;
+                } else {
+                    return $form;
+                }
+
+        }
 
 }
