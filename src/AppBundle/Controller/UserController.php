@@ -18,7 +18,7 @@ use AppBundle\Form\UserType;
 class UserController extends Controller
 {   
     /**
-     * @Rest\View
+     * @Rest\View()
      * @Rest\Get("/users")
      */
     public function getUsersAction(Request $request){
@@ -41,7 +41,8 @@ class UserController extends Controller
                 ->findOneById($id);
 
         if (empty($user)) {
-            return new JsonResponse(['message' => 'Place not found'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => 'Place not found'], 
+                Response::HTTP_NOT_FOUND);
         }
 
         return $user;
@@ -97,7 +98,8 @@ class UserController extends Controller
                     ->findOneById($id);
         /* @var $user User */
         if (empty($user)) {
-            return new JsonResponse(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => 'User not found'], 
+                Response::HTTP_NOT_FOUND);
         }
 
         $form = $this->createForm(UserType::class, $user);
@@ -125,7 +127,8 @@ class UserController extends Controller
                 ->findOneById($id);
 
         if (empty($user)) {
-            return new JsonResponse(['message' => 'user not found'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => 'user not found'], 
+                Response::HTTP_NOT_FOUND);
         }
 
         $form = $this->createForm(UserType::class, $user);

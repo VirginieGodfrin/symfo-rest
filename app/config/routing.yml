@@ -17,3 +17,7 @@ prices:
 themes:
     type:     rest
     resource: AppBundle\Controller\Place\ThemeController
+
+preferences:
+    type:     rest
+    resource: AppBundle\Controller\User\PreferenceController

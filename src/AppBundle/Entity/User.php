@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use AppBundle\Entity\Preference;
 
 /**
  * User
@@ -43,6 +45,11 @@ class User
      * @ORM\Column(name="email", type="string", length=255)
      */
     private $email;
+
+    /**
+    * @ORM\OneToMany(targetEntity="Preference", mappedBy="user")
+    */
+    private $preferences;
 
 
     
@@ -127,5 +134,46 @@ class User
     public function getEmail()
     {
         return $this->email;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->preferences = ArrayCollection();
+    }
+
+    /**
+     * Add preference
+     *
+     * @param \AppBundle\Entity\Preference $preference
+     *
+     * @return User
+     */
+    public function addPreference(Preference $preference)
+    {
+        $this->preferences[] = $preference;
+
+        return $this;
+    }
+
+    /**
+     * Remove preference
+     *
+     * @param \AppBundle\Entity\Preference $preference
+     */
+    public function removePreference(Preference $preference)
+    {
+        $this->preferences->removeElement($preference);
+    }
+
+    /**
+     * Get preferences
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPreferences()
+    {
+        return $this->preferences;
     }
 }
