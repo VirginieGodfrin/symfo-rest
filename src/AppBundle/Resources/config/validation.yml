@@ -21,3 +21,14 @@ AppBundle\Entity\User:
         email:
             - NotBlank: ~
             - Email: ~
+AppBundle\Entity\Price:
+    properties:
+        type:
+            - NotNull: ~
+            - Choice:
+                choices: [ public , perso ]
+        value:
+            - NotNull: ~
+            - Type: integer
+            - GreaterThanOrEqual:
+                value: 0

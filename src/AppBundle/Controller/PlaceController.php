@@ -17,7 +17,7 @@ use AppBundle\Form\PlaceType;
 class PlaceController extends Controller
 {   
     /**
-     * @Rest\View()
+     * @Rest\View(serializerGroups={"place"})
      * @Rest\Get("/places")
      */
     public function getPlacesAction(Request $request)
@@ -40,12 +40,10 @@ class PlaceController extends Controller
         //return $view;
 
         return $places;
-
-        //return new JsonResponse($formatted);
     }
 
     /**
-     * @Rest\View()
+     * @Rest\View(serializerGroups={"place"})
      * @Rest\Get("/places/{id}")
      */
     public function getPlaceAction(Request $request)
@@ -63,7 +61,7 @@ class PlaceController extends Controller
     }
 
     /**
-     * @Rest\View(statusCode=Response::HTTP_CREATED)
+     * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"place"})
      * @Rest\Post("/places")
      */
     public function postPlacesAction(Request $request)
@@ -99,7 +97,7 @@ class PlaceController extends Controller
     }
 
         /**
-         * @Rest\View(statusCode=Response::HTTP_NO_CONTENT)
+         * @Rest\View(statusCode=Response::HTTP_NO_CONTENT, serializerGroups={"place"})
          * @Rest\Delete("/places/{id}")
          */
         public function removePlaceAction($id,Request $request){
@@ -114,7 +112,7 @@ class PlaceController extends Controller
 
         
         /**
-         * @Rest\View()
+         * @Rest\View(serializerGroups={"place"})
          * @Rest\Put("/places/{id}")
          */
         public function updatePlaceAction($id, Request $request)
@@ -123,7 +121,7 @@ class PlaceController extends Controller
         }
 
         /**
-         * @Rest\View()
+         * @Rest\View(serializerGroups={"place"})
          * @Rest\Patch("/places/{id}")
          */
         public function patchPlaceAction($id, Request $request)
