@@ -104,10 +104,16 @@ class PlaceController extends Controller
             $em = $this->getDoctrine()->getManager();
             $place = $em->getRepository('AppBundle:Place')
                         ->findOneById($id);
-            if ($place) {
-                $em->remove($place);
-                $em->flush();
+
+            if(!$place){
+                return;
             }
+            
+            foreach($place->getPrices() as $price){
+                $em->remove($price);
+            }
+            $em->remove($place);
+            $em->flush();
         }
 
         
