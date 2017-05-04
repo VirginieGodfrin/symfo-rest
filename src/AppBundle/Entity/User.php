@@ -16,6 +16,7 @@ use AppBundle\Entity\Preference;
  */
 class User
 {
+    const MATCH_VALUE_THRESHOLD = 25;
     /**
      * @var int
      *
@@ -175,5 +176,20 @@ class User
     public function getPreferences()
     {
         return $this->preferences;
+    }
+
+    public function preferencesMatch($themes){
+        
+        $matchVal = 0;
+
+        foreach ($this->preferences as  $preference) {
+            foreach ($themes as $theme) {
+                //match() verifie si le nom de theme est le m^me que celui de preference
+                if ($preference->match($theme)) {
+                    $matchVal += $preference->getValue() * $theme->getValue();
+                }
+            }
+        }
+        return $matchVal >= self::MATCH_VALUE_THRESHOLD;
     }
 }

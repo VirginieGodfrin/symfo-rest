@@ -125,4 +125,10 @@ class Preference
     {
         return $this->user;
     }
+
+    //function match appelée dans function preferencesMatch de user.php
+    public function match(Theme $theme)
+    {
+        return $this->name === $theme->getName();
+    }
 }

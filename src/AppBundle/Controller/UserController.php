@@ -40,9 +40,8 @@ class UserController extends Controller
         $user = $em->getRepository('AppBundle:User')
                 ->findOneById($id);
 
-        if (empty($user)) {
-            return new JsonResponse(['message' => 'Place not found'], 
-                Response::HTTP_NOT_FOUND);
+        if(empty($user)){
+            return $this->userNotFound();
         }
 
         return $user;
@@ -97,9 +96,8 @@ class UserController extends Controller
         $user = $em->getRepository('AppBundle:User')
                     ->findOneById($id);
         /* @var $user User */
-        if (empty($user)) {
-            return new JsonResponse(['message' => 'User not found'], 
-                Response::HTTP_NOT_FOUND);
+        if(empty($user)){
+            return $this->userNotFound();
         }
 
         $form = $this->createForm(UserType::class, $user);
@@ -126,9 +124,8 @@ class UserController extends Controller
         $user = $em->getRepository('AppBundle:User')
                 ->findOneById($id);
 
-        if (empty($user)) {
-            return new JsonResponse(['message' => 'user not found'], 
-                Response::HTTP_NOT_FOUND);
+        if(empty($user)){
+            return $this->userNotFound();
         }
 
         $form = $this->createForm(UserType::class, $user);
@@ -145,6 +142,41 @@ class UserController extends Controller
             return $form;
         }
 
+    }
+
+    /**
+     * @Rest\View(serializerGroups={"place"}) // la méthode renvoie des place !
+     * @Rest\Get("/users/{id}/suggestions")
+     */
+    public function getUserSuggestionAction($id, Request $request){
+
+        $em = $this->getDoctrine()->getManager();
+
+        $user = $em->getRepository('AppBundle:User')
+                ->findOneById($id);
+
+        if(empty($user)){
+            return $this->userNotFound();
+        }
+
+        $suggestions = [];
+
+        $places = $em->getRepository('AppBundle:Place')
+                ->findAll();
+
+        foreach ($places as $place) {
+            if($user->preferencesMatch($place->getThemes())){
+                $suggestions[]= $place;
+            }
+        }
+
+        return $suggestions;
+    }
+
+    private function userNotFound()
+    {
+        return \FOS\RestBundle\View\View::create(['message' => 'User not found'], 
+            Response::HTTP_NOT_FOUND);
     }
 
 }
