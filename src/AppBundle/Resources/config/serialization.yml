@@ -1,12 +1,14 @@
 AppBundle\Entity\Place:
     attributes:
         id:
-            groups: ['place', 'price']
+            groups: ['place', 'price', 'theme']
         name:
-            groups: ['place', 'price']
+            groups: ['place', 'price', 'theme']
         address:
-            groups: ['place', 'price']
+            groups: ['place', 'price', 'theme']
         prices:
+            groups: ['place']
+        themes:
             groups: ['place']
 
 
@@ -20,3 +22,14 @@ AppBundle\Entity\Price:
             groups: ['place', 'price']
         place:
             groups: ['price']
+
+AppBundle\Entity\Theme:
+    attributes:
+        id:
+            groups: ['place', 'theme']
+        name:
+            groups: ['place', 'theme']
+        value:
+            groups: ['place', 'theme']
+        place:
+            groups: ['theme']

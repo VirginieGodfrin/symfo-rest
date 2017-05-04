@@ -6,43 +6,48 @@ use Doctrine\ORM\Mapping as ORM;
 use AppBundle\Entity\Place;
 
 /**
- * @ORM\Entity()
- * @ORM\Table(name="prices",
- *      uniqueConstraints={@ORM\UniqueConstraint(name="prices_type_place_unique", columns={"type", "place_id"})}
- * )
+ * Theme
+ *
+ * @ORM\Table(name="theme")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ThemeRepository")
  */
-class Price
+class Theme
 {
     /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    private $id;
 
     /**
-     * @ORM\Column(type="string")
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255)
      */
-    protected $type;
+    private $name;
 
     /**
-     * @ORM\Column(type="integer")
+     * @var int
+     *
+     * @ORM\Column(name="value", type="integer")
      */
-    protected $value;
+    private $value;
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="Place", inversedBy="prices")
-     * 
+     * @ORM\ManyToOne(targetEntity="Place", inversedBy="themes")
      */
-    protected $place;
+    private $place;
 
-    
+
 
     /**
      * Get id
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -50,35 +55,35 @@ class Price
     }
 
     /**
-     * Set type
+     * Set name
      *
-     * @param string $type
+     * @param string $name
      *
-     * @return Price
+     * @return Theme
      */
-    public function setType($type)
+    public function setName($name)
     {
-        $this->type = $type;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * Get type
+     * Get name
      *
      * @return string
      */
-    public function getType()
+    public function getName()
     {
-        return $this->type;
+        return $this->name;
     }
 
     /**
      * Set value
      *
-     * @param float $value
+     * @param integer $value
      *
-     * @return Price
+     * @return Theme
      */
     public function setValue($value)
     {
@@ -90,7 +95,7 @@ class Price
     /**
      * Get value
      *
-     * @return float
+     * @return int
      */
     public function getValue()
     {
@@ -102,7 +107,7 @@ class Price
      *
      * @param \AppBundle\Entity\Place $place
      *
-     * @return Price
+     * @return Theme
      */
     public function setPlace(Place $place = null)
     {
