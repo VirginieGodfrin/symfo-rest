@@ -82,4 +82,11 @@ fos_rest:
             - { path: '^/', priorities: ['json','xml'], fallback_format: 'json', prefer_extension: false }
     body_listener:
         enabled: true
+    exception:
+        enabled: true
+        messages:
+            'Symfony\Component\Security\Core\Exception\BadCredentialsException': true
+            'Symfony\Component\HttpKernel\Exception\HttpException' : true
+        codes:
+            'Symfony\Component\Security\Core\Exception\BadCredentialsException': 401
 

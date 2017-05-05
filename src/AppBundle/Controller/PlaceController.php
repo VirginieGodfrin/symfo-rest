@@ -54,7 +54,8 @@ class PlaceController extends Controller
                 ->findOneById($id);
 
         if (empty($place)) {
-            return new JsonResponse(['message' => 'Place not found'], Response::HTTP_NOT_FOUND);
+            // return new JsonResponse(['message' => 'Place not found'], Response::HTTP_NOT_FOUND);
+            return $this->placeNotFound();
         }
         return $place;
 
@@ -143,7 +144,8 @@ class PlaceController extends Controller
                         ->findOneById($id);
 
         if (empty($place)) {
-            return \FOS\RestBundle\View\View::create(['message' => 'Place not found'], Response::HTTP_NOT_FOUND);
+            // return \FOS\RestBundle\View\View::create(['message' => 'Place not found'], Response::HTTP_NOT_FOUND);
+            return $this->placeNotFound();
         }
 
         $form = $this->createForm(PlaceType::class, $place);
@@ -157,5 +159,12 @@ class PlaceController extends Controller
         } else {
             return $form;
         }
+    }
+
+    private function placeNotFound()
+    {
+        // return \FOS\RestBundle\View\View::create(['message' => 'User not found'], 
+        //     Response::HTTP_NOT_FOUND);
+        throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Place not found');
     }
 }

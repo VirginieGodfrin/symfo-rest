@@ -53,11 +53,34 @@ class AuthTokenController extends Controller{
         $em->flush();
 
         return $authToken;	
-}
+	}
 
-private function invalidCredentials()
+	/**
+     * @Rest\View(statusCode=Response::HTTP_NO_CONTENT)
+     * @Rest\Delete("/auth-tokens/{id}")
+     */
+    public function removeAuthTokenAction(Request $request)
     {
-        return \FOS\RestBundle\View\View::create(['message' => 'Invalid credentials'], Response::HTTP_BAD_REQUEST);
+        $em = $this->getDoctrine()->getManager();
+
+        $authToken = $em->getRepository('AppBundle:AuthToken')
+                    ->find($request->get('id'));
+
+        $connectedUser = $this->get('security.token_storage')
+        						->getToken()
+        						->getUser();
+
+        if ($authToken && $authToken->getUser()->getId() === $connectedUser->getId()) {
+            $em->remove($authToken);
+            $em->flush();
+        } else {
+            throw new \Symfony\Component\HttpKernel\Exception\BadRequestHttpException();
+        }
     }
+
+	private function invalidCredentials()
+	    {
+	        return \FOS\RestBundle\View\View::create(['message' => 'Invalid credentials'], Response::HTTP_BAD_REQUEST);
+	    }
 
 }

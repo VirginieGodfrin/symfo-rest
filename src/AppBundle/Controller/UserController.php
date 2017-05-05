@@ -18,7 +18,7 @@ use AppBundle\Form\UserType;
 class UserController extends Controller
 {   
     /**
-     * @Rest\View()
+     * @Rest\View(serializerGroups={"user"})
      * @Rest\Get("/users")
      */
     public function getUsersAction(Request $request){
@@ -31,7 +31,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Rest\View
+     * @Rest\View(serializerGroups={"user"})
      * @Rest\Get("/users/{id}")
      */
     public function getUserAction($id){
@@ -49,7 +49,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Rest\View(statusCode=Response::HTTP_CREATED)
+     * @Rest\View(statusCode=Response::HTTP_CREATED,serializerGroups={"user"})
      * @Rest\Post("/users")
      */
     public function postUsersAction(Request $request)
@@ -76,7 +76,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Rest\View()
+     * @Rest\View(serializerGroups={"user"})
      * @Rest\Delete("/users/{id}")
      */
     public function removeUserAction($id,Request $request)
@@ -240,8 +240,9 @@ class UserController extends Controller
 
     private function userNotFound()
     {
-        return \FOS\RestBundle\View\View::create(['message' => 'User not found'], 
-            Response::HTTP_NOT_FOUND);
+        // return \FOS\RestBundle\View\View::create(['message' => 'User not found'], 
+        //     Response::HTTP_NOT_FOUND);
+        throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('User not found');
     }
 
 }
