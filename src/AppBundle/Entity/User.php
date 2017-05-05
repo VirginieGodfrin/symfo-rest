@@ -141,7 +141,7 @@ class User
      */
     public function __construct()
     {
-        $this->preferences = ArrayCollection();
+        $this->preferences = new ArrayCollection();
     }
 
     /**
