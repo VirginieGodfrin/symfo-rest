@@ -55,17 +55,23 @@ class UserController extends Controller
     public function postUsersAction(Request $request)
     {
         $user = new User();
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(UserType::class, $user,['validation_groups'=>['Default', 'New']]);
 
         $form->submit($request->request->all());
 
         if ($form->isValid()) {
-             $em = $this->getDoctrine()->getManager();
-             $em->persist($user);
-             $em->flush();
-             return $user;
+            // appel au service encoder de symfo
+            $encoder = $this->get('security.password_encoder');
+            // le mot de passe en claire est encodé avant la sauvegarde
+            $encoded = $encoder->encodePassword($user, $user->getPlainPassword());
+            $user->setPassword($encoded);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+            return $user;
         } else {
-             return $form;
+            return $form;
         }
     }
 
@@ -86,41 +92,88 @@ class UserController extends Controller
         }
     }
 
+    // /**
+    //  * @Rest\View()
+    //  * @Rest\Put("/users/{id}")
+    //  */
+    // public function updateUserAction($id, Request $request)
+    // {
+    //     $em = $this->getDoctrine()->getManager();
+    //     $user = $em->getRepository('AppBundle:User')
+    //                 ->findOneById($id);
+    //     /* @var $user User */
+    //     if(empty($user)){
+    //         return $this->userNotFound();
+    //     }
+
+    //     $form = $this->createForm(UserType::class, $user);
+
+    //     $form->submit($request->request->all());
+
+    //     if ($form->isValid()){
+    //         $em->merge($user);
+    //         $em->flush();
+    //         return $user;
+    //     } else {
+    //         return $form;
+    //     }
+    // }
+
+    ///**
+    // * @Rest\View()
+    // * @Rest\Patch("/users/{id}")
+    // */
+    // public function patchUserAction($id, Request $request)
+    // {
+    //     $em = $this->getDoctrine()->getManager();
+
+    //     $user = $em->getRepository('AppBundle:User')
+    //             ->findOneById($id);
+
+    //     if(empty($user)){
+    //         return $this->userNotFound();
+    //     }
+
+    //     $form = $this->createForm(UserType::class, $user);
+
+    //     // Le paramètre false dit à Symfony de garder les valeurs dans notre
+    //     // entité si l'utilisateur n'en fournit pas une dans sa requête
+    //     $form->submit($request->request->all(), false);
+
+    //     if ($form->isValid()) {
+    //         $em->merge($user);
+    //         $em->flush();
+    //         return $user;
+    //     } else {
+    //         return $form;
+    //     }
+
+    // }
+
     /**
-     * @Rest\View()
+     * @Rest\View(serializerGroups={"user"})
      * @Rest\Put("/users/{id}")
      */
-    public function updateUserAction($id, Request $request)
+    public function updateUserAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository('AppBundle:User')
-                    ->findOneById($id);
-        /* @var $user User */
-        if(empty($user)){
-            return $this->userNotFound();
-        }
-
-        $form = $this->createForm(UserType::class, $user);
-
-        $form->submit($request->request->all());
-
-        if ($form->isValid()){
-            $em->merge($user);
-            $em->flush();
-            return $user;
-        } else {
-            return $form;
-        }
+        return $this->updateUser($request, true);
     }
 
     /**
-     * @Rest\View()
+     * @Rest\View(serializerGroups={"user"})
      * @Rest\Patch("/users/{id}")
      */
-    public function patchUserAction($id, Request $request)
+    public function patchUserAction(Request $request)
     {
+        return $this->updateUser($request, false);
+    }
+
+
+    private function updateUser(Request $request, $clearMissing){
+        
         $em = $this->getDoctrine()->getManager();
 
+        $id = $request->get('id');
         $user = $em->getRepository('AppBundle:User')
                 ->findOneById($id);
 
@@ -128,20 +181,32 @@ class UserController extends Controller
             return $this->userNotFound();
         }
 
-        $form = $this->createForm(UserType::class, $user);
+        if($clearMissing){
+            // Si une mise à jour complète, le mot de passe doit être validé
+            $option = ['validation_groups'=>['Default','FullUpdate']];
+            //'default' regroupe toutes les contraintes de validation qui ne sont dans aucun groupe
+        }else{
+            // Le groupe de validation par défaut de Symfony est Default
+            $option = [];
+        }
 
-        // Le paramètre false dit à Symfony de garder les valeurs dans notre
-        // entité si l'utilisateur n'en fournit pas une dans sa requête
-        $form->submit($request->request->all(), false);
+        $form = $this->createForm(UserType::class, $user, $options);
 
-        if ($form->isValid()) {
+        $form->submit($request->request->all(), $clearMissing);
+
+        if($form->isValid()){
+            // Si l'utilisateur veut changer son mot de passe
+            if(!empty($user->getPlainPassword())){
+                $encoder = $this->get('security.password_encoder');
+                $encoded = $encoder->encodePassword($user, $user->getPlainPassword());
+                $user->setPassword($encoded);
+            }
             $em->merge($user);
             $em->flush();
             return $user;
-        } else {
+        }else{
             return $form;
         }
-
     }
 
     /**

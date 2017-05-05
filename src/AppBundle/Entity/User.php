@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Security\Core\User\UserInterface;
 use AppBundle\Entity\Preference;
 
 /**
@@ -14,7 +15,7 @@ use AppBundle\Entity\Preference;
  * )
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  */
-class User
+class User implements UserInterface
 {
     const MATCH_VALUE_THRESHOLD = 25;
     /**
@@ -51,6 +52,13 @@ class User
     * @ORM\OneToMany(targetEntity="Preference", mappedBy="user")
     */
     private $preferences;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $password;
+
+    protected $plainPassword;
 
 
     
@@ -191,5 +199,64 @@ class User
             }
         }
         return $matchVal >= self::MATCH_VALUE_THRESHOLD;
+    }
+
+    /**
+     * Set password
+     *
+     * @param string $password
+     *
+     * @return User
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * Get password
+     *
+     * @return string
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
+        // forces the object to look "dirty" to Doctrine. Avoids
+        // Doctrine *not* saving this entity, if only plainPassword changes
+        //$this->password = null;
+        return $this->plainPassword;
+    }
+
+     public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    public function getRoles()
+    {
+        return [];
+    }
+
+    public function getSalt()
+    {
+        return null;
+    }
+
+    public function getUsername()
+    {
+        return $this->email;
+    }
+
+    public function eraseCredentials()
+    {
+        // Suppression des données sensibles
+        $this->plainPassword = null;
     }
 }
