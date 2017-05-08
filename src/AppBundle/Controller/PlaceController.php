@@ -13,18 +13,50 @@ use FOS\RestBundle\View\ViewHandler;
 use FOS\RestBundle\View\View; // Utilisation de la vue de FOSRestBundle
 use AppBundle\Entity\Place;
 use AppBundle\Form\PlaceType;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
+use FOS\RestBundle\Request\ParamFetcher;
 
 class PlaceController extends Controller
 {   
     /**
      * @Rest\View(serializerGroups={"place"})
-     * @Rest\Get("/places")
+     * @Rest\Get("/places")     
+     * @QueryParam(name="offset", requirements="\d+", default="", description="Index de début de la pagination")
+     * @QueryParam(name="limit", requirements="\d+", default="", description="Index de fin de la pagination")
+     * @QueryParam(name="sort", requirements="(asc|desc)", nullable=true, description="Ordre de tri (basé sur le nom)")
      */
-    public function getPlacesAction(Request $request)
+    public function getPlacesAction(Request $request, ParamFetcher $paramFetcher)
     {
+        $offset = $paramFetcher->get('offset');
+        $limit = $paramFetcher->get('limit');
+        $sort = $paramFetcher->get('sort');
+
+
         $em = $this->getDoctrine()->getManager();
-        $places = $em->getRepository('AppBundle:Place')
-                ->findAll();
+
+        $qb= $em->createQueryBuilder();
+        $qb->select('p')
+            ->from('AppBundle:Place', 'p');
+
+        if ($offset != "") {
+            $qb->setFirstResult($offset);
+        }
+
+        if ($limit != "") {
+            $qb->setMaxResults($limit);
+        }
+
+        if (in_array($sort, ['asc', 'desc'])) {
+            $qb->orderBy('p.name', $sort);
+        }
+
+        $places = $qb->getQuery()->getResult();
+
+        return $places;
+
+
+        //$places = $em->getRepository('AppBundle:Place')
+        //       ->findAll();
 
         //Récupération du view handler
         //$viewHandler = $this->get('fos_rest.view_handler');

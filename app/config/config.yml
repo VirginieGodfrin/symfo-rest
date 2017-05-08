@@ -82,6 +82,8 @@ fos_rest:
             - { path: '^/', priorities: ['json','xml'], fallback_format: 'json', prefer_extension: false }
     body_listener:
         enabled: true
+    param_fetcher_listener:
+        enabled: true
     exception:
         enabled: true
         messages:
