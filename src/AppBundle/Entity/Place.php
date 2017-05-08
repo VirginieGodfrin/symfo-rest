@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use AppBundle\Entity\Price;
 use AppBundle\Entity\Theme;
+use AppBundle\Form\Validator\Constraint\PriceTypeUniqueValidator;
 /**
  * Place
  *
