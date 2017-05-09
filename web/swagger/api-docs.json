@@ -1,0 +1,37 @@
+{
+    "swaggerVersion": "1.2",
+    "apis": [
+        {
+            "path": "\/auth-tokens",
+            "description": null
+        },
+        {
+            "path": "\/auth-tokens",
+            "description": null
+        },
+        {
+            "path": "\/places",
+            "description": null
+        },
+        {
+            "path": "\/places",
+            "description": null
+        }
+    ],
+    "apiVersion": "1.0",
+    "info": {
+        "title": "Rest API",
+        "description": "Proposition de sortie aux utilisateurs",
+        "TermsOfServiceUrl": null,
+        "contact": null,
+        "license": null,
+        "licenseUrl": null
+    },
+    "authorizations": {
+        "apiKey": {
+            "type": "apiKey",
+            "passAs": "header",
+            "keyname": "X-Auth-Token"
+        }
+    }
+}

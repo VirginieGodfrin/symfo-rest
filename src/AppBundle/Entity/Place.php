@@ -17,7 +17,7 @@ use AppBundle\Form\Validator\Constraint\PriceTypeUniqueValidator;
 class Place
 {
     /**
-     * @var int
+     * Identifiant unique du lieu
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id

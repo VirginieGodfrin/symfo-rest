@@ -1,0 +1,211 @@
+{
+    "swaggerVersion": "1.2",
+    "apiVersion": "1.0",
+    "basePath": "\/",
+    "resourcePath": "\/auth-tokens",
+    "apis": [
+        {
+            "path": "\/auth-tokens",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Cr\u00e9e un token d'authentification",
+                    "nickname": "post_auth-tokens",
+                    "parameters": [
+                        {
+                            "paramType": "form",
+                            "name": "login",
+                            "type": "string"
+                        },
+                        {
+                            "paramType": "form",
+                            "name": "password",
+                            "type": "string"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 201,
+                            "message": "Cr\u00e9ation avec succ\u00e8s",
+                            "responseModel": "AppBundle.Entity.AuthToken"
+                        },
+                        {
+                            "code": 400,
+                            "message": "Formulaire invalide",
+                            "responseModel": "AppBundle.Form.CredentialsType"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Cr\u00e9e un token d'authentification",
+                    "nickname": "post_auth-tokens",
+                    "parameters": [
+                        {
+                            "paramType": "form",
+                            "name": "login",
+                            "type": "string"
+                        },
+                        {
+                            "paramType": "form",
+                            "name": "password",
+                            "type": "string"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 201,
+                            "message": "Cr\u00e9ation avec succ\u00e8s",
+                            "responseModel": "AppBundle.Entity.AuthToken"
+                        },
+                        {
+                            "code": 400,
+                            "message": "Formulaire invalide",
+                            "responseModel": "AppBundle.Form.CredentialsType"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "models": {
+        "AppBundle.Entity.User": {
+            "id": "AppBundle.Entity.User",
+            "description": "object (User)",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "description": "integer",
+                    "format": "int32"
+                },
+                "firstname": {
+                    "type": "string",
+                    "description": "string"
+                },
+                "lastname": {
+                    "type": "string",
+                    "description": "string"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "string"
+                },
+                "plainPassword": {
+                    "type": "string",
+                    "description": "string"
+                }
+            },
+            "required": [
+                "firstname",
+                "lastname",
+                "email",
+                "plainPassword"
+            ]
+        },
+        "AppBundle.Entity.AuthToken": {
+            "id": "AppBundle.Entity.AuthToken",
+            "description": "",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "description": "integer",
+                    "format": "int32"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "string"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "description": "DateTime",
+                    "format": "date-time"
+                },
+                "user": {
+                    "$ref": "AppBundle.Entity.User"
+                }
+            },
+            "required": []
+        },
+        "AppBundle.Form.CredentialsType.FieldErrors[login]": {
+            "id": "AppBundle.Form.CredentialsType.FieldErrors[login]",
+            "description": "Field name",
+            "properties": {
+                "errors": {
+                    "type": "array",
+                    "description": "List of field error messages",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": []
+        },
+        "AppBundle.Form.CredentialsType.FieldErrors[password]": {
+            "id": "AppBundle.Form.CredentialsType.FieldErrors[password]",
+            "description": "Field name",
+            "properties": {
+                "errors": {
+                    "type": "array",
+                    "description": "List of field error messages",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": []
+        },
+        "AppBundle.Form.CredentialsType.Children": {
+            "id": "AppBundle.Form.CredentialsType.Children",
+            "description": "Errors",
+            "properties": {
+                "login": {
+                    "$ref": "AppBundle.Form.CredentialsType.FieldErrors[login]"
+                },
+                "password": {
+                    "$ref": "AppBundle.Form.CredentialsType.FieldErrors[password]"
+                }
+            },
+            "required": []
+        },
+        "AppBundle.Form.CredentialsType.FormErrors": {
+            "id": "AppBundle.Form.CredentialsType.FormErrors",
+            "description": "List of errors",
+            "properties": {
+                "children": {
+                    "$ref": "AppBundle.Form.CredentialsType.Children"
+                }
+            },
+            "required": []
+        },
+        "AppBundle.Form.CredentialsType": {
+            "id": "AppBundle.Form.CredentialsType",
+            "description": "",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "The status code",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "The error message"
+                },
+                "errors": {
+                    "$ref": "AppBundle.Form.CredentialsType.FormErrors"
+                }
+            },
+            "required": [
+                "message"
+            ]
+        }
+    },
+    "produces": [],
+    "consumes": [],
+    "authorizations": {
+        "apiKey": {
+            "type": "apiKey",
+            "passAs": "header",
+            "keyname": "X-Auth-Token"
+        }
+    }
+}

@@ -94,9 +94,40 @@ fos_rest:
             'Symfony\Component\HttpKernel\Exception\HttpException' : true
         codes:
             'Symfony\Component\Security\Core\Exception\BadCredentialsException': 401
+
 jms_serializer:
     handlers:
         datetime:
             default_format: "Y-m-d\\TH:i:sP"
             default_timezone: "UTC"
+
+nelmio_api_doc:
+    sandbox:
+        enabled:  true  
+        endpoint: http://symfo-rest-api.local
+
+        authentication:
+            name: X-Auth-Token
+            delivery: header
+
+        accept_type: application/json
+
+        body_format:
+            formats: [ json, xml ]
+            default_format: json                
+
+        request_format:
+            formats:                           
+                json: application/json         
+                xml: application/xml           
+
+            method: accept_header     
+            default_format: json
+    swagger:
+        api_base_path:        /
+        swagger_version:      '1.2'
+        api_version:          '1.0'
+        info:
+            title:                Rest API
+            description:          'Proposition de sortie aux utilisateurs' 
 
