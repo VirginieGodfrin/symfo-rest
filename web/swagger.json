@@ -1,0 +1,210 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Proposition de suggestions API",
+    "description": "Proposer des idées de sortie à des utilisateurs en utilisant leurs préférences",
+    "version": "1.0.0"
+  },
+  "host": "rest-api.local",
+  "schemes": [
+    "http"
+  ],
+  "produces": [
+    "application/json",
+    "application/xml"
+  ],
+  "consumes": [
+    "application/json",
+    "application/xml"
+  ],
+  "paths": {
+    "auth-tokens": {
+      "post": {
+        "summary": "Authentifie un utilisateur",
+        "description": "Crée un token permettant à l'utilisateur d'accéder aux contenus protégés",
+        "parameters": [
+          {
+            "name": "credentials",
+            "in": "body",
+            "required": true,
+            "description": "Login et mot de passe de l'utilisateur",
+            "schema": {
+              "$ref": "#/definitions/Credentials"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token créé",
+            "schema": {
+              "$ref": "#/definitions/AuthToken.auth-token"
+            }
+          },
+          "400": {
+            "description": "Donnée invalide",
+            "schema": {
+              "$ref": "#/definitions/CredentialsTypeError"
+            }
+          }
+        }
+      },
+      "auth-tokens/{id}": {
+        "delete": {
+          "summary": "Déconnecte un utilisateur",
+          "description": "Supprime le token de l'utilisateur",
+          "parameters": [
+            {
+              "$ref": "#/parameters/X-Auth-Token"
+            },
+            {
+              "name": "id",
+              "in": "path",
+              "type": "integer",
+              "required": true,
+              "description": "Identifiant du token à supprimer"
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Token supprimé"
+            },
+            "400": {
+              "description": "Donnée invalide",
+              "schema": {
+                "$ref": "#/definitions/GenericError"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "type": "string",
+      "required": true,
+      "description": "Valeur du token d'authentification"
+    }
+  },
+  "definitions": {
+    "Credentials": {
+      "type": "object",
+      "required": [
+        "login",
+        "password"
+      ],
+      "properties": {
+        "login": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "AuthToken.auth-token": {
+      "type": "object",
+      "required": [
+        "id",
+        "value",
+        "created_at",
+        "user"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "value": {
+          "type": "string",
+          "title": "Token d'authentification",
+          "description": "Valeur à utiliser dans l'entête X-Auth-Token"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "user": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "email": {
+              "type": "string",
+              "format": "email"
+            },
+            "firstname": {
+              "type": "string"
+            },
+            "lastname": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "CredentialsTypeError": {
+      "type": "object",
+      "required": [
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "message": {
+          "type": "string"
+        },
+        "errors": {
+          "type": "object",
+          "properties": {
+            "children": {
+              "type": "object",
+              "properties": {
+                "login": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "password": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "GenericError": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
